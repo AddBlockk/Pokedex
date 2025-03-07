@@ -1,4 +1,4 @@
-// import { useTheme } from "@utils/contexts";
+import { useTheme } from "../../../features/theme/hooks/useTheme";
 
 const Sun = () => (
 	<svg viewBox="0 0 24 24" width="30" height="30">
@@ -18,11 +18,14 @@ const Moon = () => (
 	</svg>
 );
 export const ThemeButton = () => {
-	// const { theme, setTheme } = useTheme();
+	const { theme, setTheme } = useTheme();
 
-	// return (
-	// 	<button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-	// 		{theme === "dark" ? <Moon /> : <Sun />}
-	// 	</button>
-	// );
+	return (
+		<button
+			className="cursor-pointer"
+			onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+		>
+			{theme === "dark" ? <Moon /> : <Sun />}
+		</button>
+	);
 };

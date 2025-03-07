@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Spinner, Typography } from "../../common/index";
 import { useRequestPokemonByIdQuery, useRequestPokemonSpeciesQuery } from "../../utils/api/hooks";
 import { getPokemonId } from "../../utils/helpers";
-import { PokemonStats } from "../../common/pokemon/index";
+import { PokemonEvolutionChain, PokemonStats } from "../../common/pokemon/index";
 
 interface PokemonStat {
 	stat: {
@@ -37,12 +37,29 @@ export const PokemonPage: React.FC = () => {
 
 	const pokemon = requestPokemonByIdQuery.data.data;
 
-	if (!isPokemonSpeciesData) {
-		return <Spinner />;
+	const evolutionChainData = requestPokemonSpeciesQuery.data?.data?.chain;
+	console.log(evolutionChainData);
+
+	if (!evolutionChainData) {
+		return <Typography>No evolution data available</Typography>;
 	}
 
+	const evolutions = [];
+	let currentEvolution = evolutionChainData;
+
+	while (currentEvolution) {
+		// Добавляем текущую эволюцию
+		evolutions.push(currentEvolution.species.name);
+
+		// Переходим к следующей эволюции, если она есть
+		currentEvolution =
+			currentEvolution.evolves_to.length > 0 ? currentEvolution.evolves_to[0] : null;
+	}
+
+	console.log("evolutions", evolutionChainData.evolves_to[0]);
+
 	return (
-		<div className="page">
+		<div className="page text-gray-800 dark:text-slate-300">
 			<div
 				tabIndex={0}
 				role="button"
@@ -54,16 +71,30 @@ export const PokemonPage: React.FC = () => {
 				<Typography variant="title-body">back</Typography>
 			</div>
 
-			<div className="name_container">
+			<div className="flex items-center gap-[10px]">
 				<div className="number">{getPokemonId(id)}</div>
-				<div>{pokemon.name}</div>
+				<div className="text-2xl font-semibold capitalize">{pokemon.name}</div>
 			</div>
 
-			<div className="content">
-				<div className="image_container">
-					<img src={pokemon.sprites.front_default ?? ""} alt={pokemon.name} />
+			<div className="flex-3 justify-between md:flex md:gap-[50px]">
+				<div className="flex flex-1 justify-center md:inline-flex">
+					<img
+						className="h-auto w-1/3 scale-[1.5] object-cover md:w-full md:scale-[1]"
+						src={pokemon.sprites.front_default ?? ""}
+						alt={pokemon.name}
+						width="300"
+						height="300"
+					/>
 				</div>
-				<div>
+				<div className="flex-2">
+					<div className="my-[10px] flex flex-col gap-[10px] md:w-[50%]">
+						{id > 1 && (
+							<Button variant="outlined" onClick={() => navigate(`/pokemon/${id - 1}`)}>
+								BACK
+							</Button>
+						)}
+						<Button onClick={() => navigate(`/pokemon/${id + 1}`)}>NEXT</Button>
+					</div>
 					<PokemonStats
 						title="Stats"
 						stats={pokemon.stats.map((item: PokemonStat) => `${item.stat.name}: ${item.base_stat}`)}
@@ -73,15 +104,13 @@ export const PokemonPage: React.FC = () => {
 						stats={pokemon.abilities.map(({ ability }: PokemonAbility) => ability.name)}
 					/>
 				</div>
-			</div>
-
-			<div className="button_container">
-				{id > 1 && (
-					<Button variant="outlined" onClick={() => navigate(`/pokemon/${id - 1}`)}>
-						BACK
-					</Button>
-				)}
-				<Button onClick={() => navigate(`/pokemon/${id + 1}`)}>NEXT</Button>
+				{/* 
+				{evolutionChainData?.url && (
+					<PokemonEvolutionChain
+						chainId={parseInt(evolutionChainData.url.split("/")[6], 10)}
+						pokemonName={pokemon.name}
+					/>
+				)} */}
 			</div>
 		</div>
 	);

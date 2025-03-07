@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { requestEvolutionChain } from "../evolution-chain";
 import { AxiosResponse } from "axios";
-import { Pokemon } from "../../../../../@types/data";
+
 
 interface UseRequestEvolutionChainQueryParams {
 	id: Pokemon["id"];

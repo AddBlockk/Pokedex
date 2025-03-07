@@ -25,13 +25,13 @@ export const AuthPage = () => {
 	});
 
 	return (
-		<section className="flex flex-col justify-center text-black md:h-screen md:items-center md:justify-start">
-			<div className="md:flex md:h-2/3 md:w-2/3 md:flex-row md:rounded-lg md:shadow-xl">
+		<section className="flex flex-col justify-center text-black md:h-screen md:items-center">
+			<div className="md:flex md:w-2/3 md:flex-row md:rounded-lg md:shadow-xl">
 				<div className="bg-auth-cover relative h-[150px] w-full rounded-b-3xl md:h-full md:w-1/2 md:rounded-l-lg md:rounded-b-none">
 					<div className="bg-logo absolute inset-0 h-full w-full rounded-b-2xl bg-[url('./assets/img/cover.jpg')] bg-cover bg-center bg-no-repeat md:top-0 md:h-full md:rounded-l-lg md:rounded-br-none" />
 				</div>
 
-				<div className="flex w-full flex-col items-center justify-center p-6 md:w-1/2">
+				<div className="flex w-full flex-col items-center justify-center rounded-2xl p-6 md:w-1/2 md:rounded-l-md md:rounded-r-2xl dark:border-[1px] dark:text-white">
 					<div className="flex w-full flex-col items-center justify-center">
 						{!isSignUp && <SignInForm />}
 						{isSignUp && <SignUpForm />}
@@ -42,7 +42,6 @@ export const AuthPage = () => {
 						</div>
 					</div>
 
-					{/* Перемещаем Google кнопку внутрь этого контейнера */}
 					<div className="mt-4 w-full text-center">
 						<Divider title="OR" />
 						<GoogleButton onClick={() => logInWithGoogleMutate()}>Login with GOOGLE</GoogleButton>

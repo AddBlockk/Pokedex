@@ -8,7 +8,7 @@ interface TitleProps {
 }
 
 const variantClasses = {
-	title: "text-2xl font-semibold capitalize",
+	title: "text-2xl font-semibold capitalize dark:text-white",
 	"sub-title": "text-xl font-medium capitalize",
 	"title-regular": "text-lg font-normal",
 	body: "text-base font-medium",

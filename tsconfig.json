@@ -30,6 +30,6 @@
 			"@utils/hooks": ["./utils/hooks"]
 		}
 	},
-	"include": ["**/*.ts", "**/*.tsx", "tailwind.config.js", "vite.config.ts"],
+	"include": ["**/*.ts", "**/*.tsx", "tailwind.config.ts", "vite.config.ts"],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }

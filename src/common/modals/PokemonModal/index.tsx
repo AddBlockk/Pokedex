@@ -1,7 +1,5 @@
 import React from "react";
 import { Modal } from "../Modal";
-import { ModalProps } from "../../../../@types/data";
-import { Pokemon } from "../../../../@types/data";
 import { PokemonModalContent } from "./PokemonModalContent";
 
 interface PokemonModalProps {

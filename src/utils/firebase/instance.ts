@@ -19,4 +19,4 @@ export const auth = getAuth(app);
 export const storage = getStorage(app);
 export const database = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
-export type Collection = "pokemons" | "users";
+export type Collection = "pokemons" | "users"; /*выбор определённой коллекции*/

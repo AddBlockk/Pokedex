@@ -1,73 +1,81 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Spinner, Typography } from "../../../../common/index";
-import { PokemonTypes } from "../../../../common/pokemon/index";
-// import { ModalProps, Pokemon } from "../../../../../@types/data";
+import { PokemonTypes } from "../../../../common/pokemon/PokemonTypes";
+import { Button, Spinner, Typography } from "../../../index";
 import { useRequestPokemonByIdQuery } from "../../../../utils/api/hooks/index";
-import { useGetAuthStateQuery } from "../../../../entities/auth/api/authApi";
+import { useAuthState } from "../../../../utils/firebase/hooks/index";
 import { useUpdateDocumentMutation } from "../../../../utils/firebase/hooks/useUpdateDocumentMutation";
+
 interface PokemonModalContentProps extends Pick<ModalProps, "onClose"> {
 	pokemonId: Pokemon["id"];
 }
 
-const MAX_USER_POKEMONS = 6;
+const MAX_USER_POKEMONS = 6; /*Макс кол-во покемонов*/
 
 export const PokemonModalContent: React.FC<PokemonModalContentProps> = ({ pokemonId, onClose }) => {
 	const navigate = useNavigate();
-	const { data: user, isLoading: isAuthLoading } = useGetAuthStateQuery();
-	const { data: response, isLoading } = useRequestPokemonByIdQuery({ id: pokemonId });
-	const { mutate: updateDocument, isLoading: isUpdating } = useUpdateDocumentMutation();
+	const authState = useAuthState(); /*Получаем состояние авторизации*/
+	const requestPokemonByIdQuery = useRequestPokemonByIdQuery({
+		id: pokemonId /*Получаем покемона по id*/,
+	});
 
-	if (isLoading || isAuthLoading || !response?.data) return <Spinner />;
+	// Добавление покемона в команду (в firebase)
+	const updateDocumentMutation = useUpdateDocumentMutation({
+		options: {
+			onSuccess: () => {
+				onClose();
+			},
+		},
+	});
 
-	const pokemon = response.data;
+	// Отображение спинера при загрузке данных
+	if (requestPokemonByIdQuery.isLoading || !requestPokemonByIdQuery.data?.data || !authState.data)
+		return <Spinner />;
+
+	// Кнопка появления для добавления покемона (если чел зареган и у него не макс кол-во покемонов то он добавляет их в свой pokedex)
 	const isShowAddButton =
-		user &&
-		user.isLoginIn &&
-		user.pokemons?.length < MAX_USER_POKEMONS &&
-		!user.pokemons?.some((p: { id: number }) => p.id === pokemonId);
+		authState?.data?.pokemons?.length < MAX_USER_POKEMONS &&
+		!authState.data.pokemons.some((pokemon) => pokemon.id === pokemonId);
+
+	// Данные о покемоне через запрос
+	const { data: pokemon } = requestPokemonByIdQuery.data;
+	const user = authState.data;
 
 	return (
-		<div className="flex flex-col items-center rounded-2xl bg-white p-6 shadow-md dark:bg-gray-800">
-			<Typography variant="title" className="text-xl font-bold">
-				{pokemon.name}
-			</Typography>
-
-			<div className="flex h-32 w-32 items-center justify-center">
-				<img
-					src={pokemon.sprites.front_default ?? ""}
-					alt={pokemon.name}
-					className="h-full w-full object-contain"
-				/>
+		<div className="mb-2 flex flex-col gap-4">
+			<Typography variant="title">{pokemon.name}</Typography>
+			<div className="flex justify-center">
+				<img className="w-2/3" src={pokemon.sprites.front_default ?? ""} alt="" />
 			</div>
 
 			<PokemonTypes types={pokemon.types} />
 
-			{/* {isShowAddButton && (
+			{/* Если можно добавить покемона в команду, показываем кнопку */}
+			{isShowAddButton && (
 				<Button
-					loading={isUpdating}
+					loading={requestPokemonByIdQuery.isLoading}
+					// Мутируем данные и добавляем покемона в команду пользователя
 					onClick={() =>
-						updateDocument({
+						updateDocumentMutation.mutate({
 							collection: "users",
 							data: {
 								pokemons: [
-									...(user.pokemons || []),
+									...user.pokemons, // Сохраняем текущих покемонов пользователя
 									{ id: pokemon.id, name: pokemon.name, image: pokemon.sprites.front_default },
 								],
 							},
-							id: user.uid,
+							id: user.uid, // ID пользователя, для которого обновляется информация
 						})
 					}
 				>
 					ADD TO TEAM
 				</Button>
-			)} */}
-
-			<div className="mt-4 flex gap-4">
+			)}
+			<div className="flex gap-2">
 				<Button variant="outlined" onClick={() => navigate(`/pokemon/${pokemonId}`)}>
 					OPEN
 				</Button>
-				<Button onClick={onClose} loading={isLoading}>
+				<Button onClick={onClose} loading={requestPokemonByIdQuery.isLoading}>
 					CLOSE
 				</Button>
 			</div>

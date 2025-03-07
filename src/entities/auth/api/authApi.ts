@@ -4,6 +4,7 @@ import { auth, database } from "../../../utils/firebase/instance";
 import { collection, addDoc, doc, getDoc, setDoc } from "firebase/firestore";
 
 export const authApi = createApi({
+	tagTypes: ["Auth"],
 	reducerPath: "authApi",
 	baseQuery: fakeBaseQuery(),
 	endpoints: (builder) => ({

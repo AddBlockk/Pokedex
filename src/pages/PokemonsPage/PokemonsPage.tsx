@@ -5,7 +5,6 @@ import { useRequestPokemonInfiniteQuery } from "../../utils/api/hooks/index";
 import { KEYS } from "../../utils/constants";
 import { PokemonModal } from "../../common/modals/PokemonModal";
 import { AxiosResponse } from "axios";
-import { NamedAPIResource, NamedAPIResourceList } from "../../../@types/data";
 
 export const PokemonsPage: React.FC = () => {
 	const { isInView, ref } = useInView();
@@ -27,11 +26,9 @@ export const PokemonsPage: React.FC = () => {
 		[] as NamedAPIResource[],
 	);
 
-	console.log(selectedPokemonId);
-
 	return (
 		<div>
-			<div className="grid grid-cols-1 gap-5 text-gray-600 md:grid-cols-3 md:gap-10">
+			<div className="grid grid-cols-1 gap-5 text-gray-600 md:grid-cols-3 md:gap-6">
 				{pokemons.map((pokemon: NamedAPIResource, index: number) => {
 					const id = index + 1;
 					return (
@@ -49,9 +46,11 @@ export const PokemonsPage: React.FC = () => {
 								setSelectedPokemonId(id);
 							}}
 						>
-							<div className="flex items-center justify-between gap-1">
-								<div className="text-2xl font-bold capitalize">{pokemon.name}</div>
-								<div className="text-base font-light">{id}</div>
+							<div className="flex cursor-pointer items-center justify-between gap-1 rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg dark:bg-slate-500">
+								<div className="text-2xl font-bold text-gray-800 capitalize dark:text-white">
+									{pokemon.name}
+								</div>
+								<div className="text-base font-light text-gray-500 dark:text-gray-300">{id}</div>
 							</div>
 						</div>
 					);

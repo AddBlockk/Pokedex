@@ -1,11 +1,10 @@
-import { PokemonType } from "../../../@types/data";
 import { typeColors } from "../../types/color";
 
 interface PokemonTypesProps {
 	types: PokemonType[];
 }
 
-export const PokemonTypes: React.FC<PokemonTypesProps> = ({ types }) => (
+export const PokemonTypes: React.FC<PokemonTypesProps> = ({ types = [] }) => (
 	<ul className="mt-[5px] flex gap-[5px]">
 		{types.map(({ type }) => (
 			<li

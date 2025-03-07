@@ -1,9 +1,9 @@
 type User = {
-  isLoginIn: User | null | undefined;
+	isLoginIn: User | null | undefined;
 	city: string;
 	displayName: Include<import("firebase/auth").User["displayName"], string>;
 	email: Include<import("firebase/auth").User["email"], string>;
-	phoneNumber: import("firebase/auth").User["phoneNumber"];
+	// phoneNumber: import("firebase/auth").User["phoneNumber"];
 	photoURL: import("firebase/auth").User["photoURL"];
 	uid: import("firebase/auth").User["uid"];
 	pokemons: {
@@ -11,9 +11,10 @@ type User = {
 		id: Pokemon["id"];
 		image: Pokemon["sprites"]["front_default"];
 	}[];
+	data: T | null;
+	phoneNumber?: string;
 };
-
-export interface ModalProps {
+interface ModalProps {
 	isShowing: boolean;
 	onClose: () => void;
 	children: React.ReactNode;

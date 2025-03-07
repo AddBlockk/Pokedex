@@ -13,11 +13,11 @@ export const PokemonInfo: React.FC<PokemonInfoProps> = ({ id }) => {
 
 	if (isLoading) return <div className="text-center text-xl font-semibold">Loading...</div>;
 
-	const { types, stats, abilities } = data?.data || {};
+	const { types = [], stats = [], abilities = [] } = data?.data || {};
 
 	return (
 		<div className="min-w-[320px] rounded-lg bg-white p-[30px] text-black shadow-2xl">
-			<div className="flex items-end justify-between font-bold">
+			{/* <div className="flex items-end justify-between font-bold">
 				<div className="text-[20px] capitalize">{data?.data.name}</div>
 				<div>#00{data?.data.id}</div>
 			</div>
@@ -32,6 +32,7 @@ export const PokemonInfo: React.FC<PokemonInfoProps> = ({ id }) => {
 			<button className="mt-[10px] w-full cursor-pointer rounded-lg bg-amber-800 py-2 text-white">
 				Открыть
 			</button>
+			fdsfds */}
 		</div>
 	);
 };

@@ -1,16 +1,12 @@
-import { Link } from "react-router";
+import React from "react";
+import { DesktopMenu } from "../common/layout/Header/components/DesktopMenu";
+import { MobileMenu } from "../common/layout/Header/components/MobileMenu";
 
-export const Header = () => {
-	return (
-		<div className="fixed z-20 container w-full rounded-2xl bg-white p-4 shadow-2xl">
-			<ul className="flex gap-6 font-medium">
-				<Link to="/" className="transition-all hover:text-red-800">
-					<li>Pokemons</li>
-				</Link>
-				<Link to="/pokedex" className="transition-all hover:text-red-800">
-					<li>Pokedex</li>
-				</Link>
-			</ul>
+export const Header: React.FC = () => (
+	<div className="fixed right-0 left-0 z-20 mx-auto mb-[20px] w-[98%] max-w-screen-xl rounded-2xl border-1 border-white bg-white px-[10px] py-[5px] shadow-2xl md:container md:w-full dark:bg-slate-500 dark:text-white">
+		<div>
+			<MobileMenu />
+			<DesktopMenu />
 		</div>
-	);
-};
+	</div>
+);

@@ -18,7 +18,7 @@ export const Button: React.FC<ButtonProps> = ({
 	...props
 }) => {
 	const baseClasses =
-		"flex items-center justify-center h-12 w-full rounded-lg shadow-md text-lg font-medium shadow-sm";
+		"flex items-center justify-center h-12 w-full rounded-lg shadow-md text-lg font-medium shadow-sm px-[10px] dark:border-1";
 
 	const variantClasses = {
 		contained: "bg-blue-500 text-white hover:bg-blue-400",

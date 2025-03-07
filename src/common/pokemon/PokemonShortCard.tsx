@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 import { PokemonTypes } from "../pokemon/index";
 import { useRequestPokemonByNameQuery } from "../../utils/api/hooks";
-import { Pokemon } from "../../../@types/data";
 
 interface PokemonShortCardProps {
-	name: Pokemon["name"];
+	name: string;
+	image?: string;
 }
 
 export const PokemonShortCard: React.FC<PokemonShortCardProps> = ({ name }) => {
@@ -20,11 +20,11 @@ export const PokemonShortCard: React.FC<PokemonShortCardProps> = ({ name }) => {
 	const isPokemonByNameData = !!pokemonByNameData && !pokemonByNameLoading;
 	if (!isPokemonByNameData) return null;
 
-	const pokemon = pokemonByNameData.data;
+	const pokemon = pokemonByNameData;
 
 	return (
 		<div
-			className="flex w-full overflow-hidden rounded-lg bg-white shadow-md"
+			className="flex w-full overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-600"
 			role="button"
 			tabIndex={0}
 			onKeyPress={(event) => {
@@ -37,7 +37,7 @@ export const PokemonShortCard: React.FC<PokemonShortCardProps> = ({ name }) => {
 			</div>
 			<div className="flex w-full flex-col gap-1 p-5">
 				<div className="text-left text-lg font-semibold">{name}</div>
-				<PokemonTypes types={pokemon.types} />
+				<PokemonTypes types={pokemon?.types ?? []} />
 			</div>
 		</div>
 	);

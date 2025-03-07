@@ -1,5 +1,4 @@
 import classnames from "classnames";
-import { ModalProps } from "../../../../@types/data";
 
 export const Modal: React.FC<ModalProps> = ({ children, isShowing, onClose }) => (
 	<div className={classnames({ modal_open: isShowing })}>
@@ -15,7 +14,7 @@ export const Modal: React.FC<ModalProps> = ({ children, isShowing, onClose }) =>
 		)}
 		<div
 			className={classnames(
-				"fixed right-0 bottom-[-100%] left-0 z-[1050] m-auto w-[99%] overflow-hidden overflow-y-auto rounded-t-2xl bg-white px-5 py-6 outline-none",
+				"fixed right-0 left-0 z-[1050] m-auto w-[99%] overflow-hidden overflow-y-auto rounded-t-2xl bg-white px-5 py-6 outline-none",
 				"md:w-96 md:rounded-2xl md:px-9",
 				"dark:bg-slate-700",
 				{ "bottom-[0]": isShowing },

@@ -1,41 +1,54 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import React from "react";
-
-import { usePromise } from "@utils/hooks";
-
+import { usePromise } from "../../../utils/hooks/index";
 import { auth, database } from "../instance";
-import { User } from "../../../../@types/data";
 
+// Хук для отслеживания состояния пользователя
 export const useAuthState = () => {
-	const { isLoading, setIsLoading, isError, setError, error, setData, data } = usePromise<User>();
+	const { isLoading, setIsLoading, isError, setError, error, setData, data } =
+		usePromise<User | null>();
 
 	React.useEffect(() => {
-		const listener = onAuthStateChanged(auth, async (user) => {
-			if (!user) return setIsLoading(false);
-			const q = query(collection(database, "users"), where("uid", "==", user?.uid));
+		const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+			if (!user) {
+				console.log("User logged out");
+				setData(null); // Явно сбрасываем состояние
+				setIsLoading(false);
+				return;
+			}
 
-			const unsub = onSnapshot(
+			console.log("User logged in:", user.uid);
+
+			const q = query(collection(database, "users"), where("uid", "==", user.uid));
+
+			const unsubscribeSnapshot = onSnapshot(
 				q,
 				(querySnapshot) => {
-					const data: User[] = [];
-					querySnapshot.forEach((doc) => {
-						data.push(doc.data() as User);
-					});
+					const userData: User[] = [];
+					querySnapshot.forEach((doc) => userData.push(doc.data() as User));
 
-					setData(data[0]);
+					if (userData.length > 0) {
+						console.log("User data updated:", userData[0]);
+						setData(userData[0]);
+					} else {
+						console.warn("User data not found in Firestore!");
+						setData(null);
+					}
+
 					setIsLoading(false);
 				},
-				(error) => setError(error.message),
+				(error) => {
+					console.error("Error fetching user data:", error);
+					setError(error.message);
+				},
 			);
 
-			return () => unsub();
+			return () => unsubscribeSnapshot();
 		});
 
-		return () => {
-			listener();
-		};
-	}, [auth]);
+		return () => unsubscribeAuth();
+	}, []);
 
 	return { data, isLoading, isError, error };
 };
