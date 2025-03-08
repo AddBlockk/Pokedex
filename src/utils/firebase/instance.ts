@@ -4,12 +4,12 @@ import { addDoc, collection, getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-	apiKey: "AIzaSyAM1F85ngsciGnT7izKu5PdP0Nx2qWfvHw",
-	authDomain: "pokemons-pokedex-project.firebaseapp.com",
-	projectId: "pokemons-pokedex-project",
-	storageBucket: "pokemons-pokedex-project.firebasestorage.app",
-	messagingSenderId: "823065767258",
-	appId: "1:823065767258:web:49e4393183dcc4fcf81763",
+	apiKey: "AIzaSyA-rv6dJBOZg0c6fYTYo4-QMwqR28W84EI",
+	authDomain: "social-chat-boltach.firebaseapp.com",
+	projectId: "social-chat-boltach",
+	storageBucket: "social-chat-boltach.appspot.com",
+	messagingSenderId: "953501565071",
+	appId: "1:953501565071:web:4287eba346f000567070fa",
 };
 
 // const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG);

@@ -37,26 +37,26 @@ export const PokemonPage: React.FC = () => {
 
 	const pokemon = requestPokemonByIdQuery.data.data;
 
-	const evolutionChainData = requestPokemonSpeciesQuery.data?.data?.chain;
-	console.log(evolutionChainData);
+	// const evolutionChainData = requestPokemonSpeciesQuery.data?.data?.chain;
+	// console.log(evolutionChainData);
 
-	if (!evolutionChainData) {
-		return <Typography>No evolution data available</Typography>;
-	}
+	// if (!evolutionChainData) {
+	// 	return <Typography>No evolution data available</Typography>;
+	// }
 
-	const evolutions = [];
-	let currentEvolution = evolutionChainData;
+	// const evolutions = [];
+	// let currentEvolution = evolutionChainData;
 
-	while (currentEvolution) {
-		// Добавляем текущую эволюцию
-		evolutions.push(currentEvolution.species.name);
+	// while (currentEvolution) {
+	// 	// Добавляем текущую эволюцию
+	// 	evolutions.push(currentEvolution.species.name);
 
-		// Переходим к следующей эволюции, если она есть
-		currentEvolution =
-			currentEvolution.evolves_to.length > 0 ? currentEvolution.evolves_to[0] : null;
-	}
+	// 	// Переходим к следующей эволюции, если она есть
+	// 	currentEvolution =
+	// 		currentEvolution.evolves_to.length > 0 ? currentEvolution.evolves_to[0] : null;
+	// }
 
-	console.log("evolutions", evolutionChainData.evolves_to[0]);
+	// console.log("evolutions", evolutionChainData.evolves_to[0]);
 
 	return (
 		<div className="page text-gray-800 dark:text-slate-300">
@@ -87,7 +87,7 @@ export const PokemonPage: React.FC = () => {
 					/>
 				</div>
 				<div className="flex-2">
-					<div className="my-[10px] flex flex-col gap-[10px] md:w-[50%]">
+					<div className="my-[55px] flex flex-col gap-[10px] md:w-[50%]">
 						{id > 1 && (
 							<Button variant="outlined" onClick={() => navigate(`/pokemon/${id - 1}`)}>
 								BACK
@@ -96,12 +96,12 @@ export const PokemonPage: React.FC = () => {
 						<Button onClick={() => navigate(`/pokemon/${id + 1}`)}>NEXT</Button>
 					</div>
 					<PokemonStats
-						title="Stats"
-						stats={pokemon.stats.map((item: PokemonStat) => `${item.stat.name}: ${item.base_stat}`)}
-					/>
-					<PokemonStats
-						title="Abilities"
-						stats={pokemon.abilities.map(({ ability }: PokemonAbility) => ability.name)}
+						key={pokemon.id}
+						title="Stats & Abilities"
+						stats={[
+							...pokemon.stats.map((item: PokemonStat) => `${item.stat.name}: ${item.base_stat}`),
+							...pokemon.abilities.map(({ ability }: PokemonAbility) => ability.name),
+						]}
 					/>
 				</div>
 				{/* 

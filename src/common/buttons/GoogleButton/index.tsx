@@ -1,4 +1,3 @@
-// import { ReactComponent as GoogleIcon } from "@assets/img/icons/google.svg";
 import GoogleIcon from "../../../assets/img/icons/google.svg";
 
 import { Button, ButtonProps } from "../Button/Button";

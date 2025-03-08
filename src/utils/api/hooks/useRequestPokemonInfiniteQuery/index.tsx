@@ -16,6 +16,7 @@ interface NamedAPIResource {
 	url: string;
 }
 
+// Генерик-интерфейс для настроек запроса
 interface RequestInfinityQuerySettings<Func = () => any> {
 	config?: import("axios").AxiosRequestConfig;
 	options?: import("@tanstack/react-query").UseInfiniteQueryOptions<
@@ -31,6 +32,7 @@ export const useRequestPokemonInfiniteQuery = (
 	settings?: RequestInfinityQuerySettings<typeof requestPokemons>,
 ): UseInfiniteQueryResult<InfiniteData<AxiosResponse<NamedAPIResourceList>>, unknown> => {
 	const queryInfo = useInfiniteQuery({
+		// Запрос покемонов
 		queryKey: ["pokemon"],
 		queryFn: ({ pageParam = 0 }) =>
 			requestPokemons({

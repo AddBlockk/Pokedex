@@ -2,11 +2,11 @@ import React from "react";
 import { Modal } from "../Modal";
 import { PokemonModalContent } from "./PokemonModalContent";
 
-interface PokemonModalProps {
-	isShowing: boolean;
-	pokemonId: number | null;
-	onClose: () => void;
-}
+// interface PokemonModalProps {
+// 	isShowing: boolean;
+// 	pokemonId: number | null;
+// 	onClose: () => void;
+// }
 
 interface PokemonModalProps extends Omit<ModalProps, "children" | "loading"> {
 	pokemonId: Pokemon["id"] | null;

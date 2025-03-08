@@ -4,53 +4,39 @@ import { auth, database } from "../../../utils/firebase/instance";
 import { collection, addDoc, doc, getDoc, setDoc } from "firebase/firestore";
 
 export const authApi = createApi({
-	tagTypes: ["Auth"],
+	tagTypes: ["Auth"], // Тег для обновления кеша
 	reducerPath: "authApi",
-	baseQuery: fakeBaseQuery(),
+	baseQuery: fakeBaseQuery(), // Firebase не требует URL
 	endpoints: (builder) => ({
 		// Эндпоинт для проверки состояния авторизации
 		getAuthState: builder.query<
 			{
-				pokemons: any;
 				isLoginIn: boolean;
 				uid?: string;
 				email?: string;
 				displayName?: string;
 				city?: string;
 				photoURL?: string;
+				pokemons: any[];
 			},
 			void
 		>({
 			queryFn: async () => {
-				return new Promise(async (resolve) => {
-					const unsubscribe = auth.onAuthStateChanged(async (user) => {
-						unsubscribe(); // Отписываемся от слушателя
-						if (user) {
-							const userDocRef = doc(database, "users", user.uid); // Ссылка на документ пользователя
-							const userDocSnap = await getDoc(userDocRef); // Получаем документ
-							if (userDocSnap.exists()) {
-								const userData = userDocSnap.data();
-								resolve({
-									data: {
-										isLoginIn: true,
-										uid: user.uid,
-										email: user.email!,
-										displayName: userData.displayName,
-										city: userData.city,
-										photoURL: user.photoURL || userData.photoURL, // Поддержка кастомного фото
-										pokemons: userData.pokemons || [],
-									},
-								});
-							} else {
-								resolve({
-									data: { isLoginIn: true, uid: user.uid, email: user.email!, pokemons: [] },
-								});
-							}
-						} else {
-							resolve({ data: { isLoginIn: false, pokemons: [] } });
-						}
-					});
-				});
+				const user = auth.currentUser;
+				if (!user) return { data: { isLoginIn: false, pokemons: [] } };
+				const userDoc = await getDoc(doc(database, "users", user.uid));
+				const userData = userDoc.exists() ? userDoc.data() : {};
+				return {
+					data: {
+						isLoginIn: true,
+						uid: user.uid,
+						email: user.email!,
+						displayName: userData.displayName || "",
+						city: userData.city || "",
+						photoURL: user.photoURL || userData.photoURL || "",
+						pokemons: userData.pokemons || [],
+					},
+				};
 			},
 		}),
 
@@ -61,19 +47,21 @@ export const authApi = createApi({
 		>({
 			async queryFn({ displayName, email, password, city }) {
 				try {
+					// Создаём пользователя в Firebase Auth
 					const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-					const user = userCredential.user;
+					const { uid, photoURL } = userCredential.user;
 
-					await setDoc(doc(database, "users", user.uid), {
-						uid: user.uid,
+					// Добавляем пользователя в Firestore
+					await setDoc(doc(database, "users", uid), {
+						uid,
 						displayName,
 						email,
 						city,
-						photoURL: user.photoURL || "",
+						photoURL: photoURL || "",
 						pokemons: [],
 					});
 
-					return { data: { uid: user.uid, email: user.email! } };
+					return { data: { uid, email } };
 				} catch (error: any) {
 					return { error: error.message };
 				}
@@ -84,8 +72,8 @@ export const authApi = createApi({
 		logIn: builder.mutation<{ uid: string; email: string }, { email: string; password: string }>({
 			async queryFn({ email, password }) {
 				try {
-					const userCredential = await signInWithEmailAndPassword(auth, email, password);
-					const user = userCredential.user;
+					// Авторизуем пользователя через Firebase
+					const user = (await signInWithEmailAndPassword(auth, email, password)).user;
 					return { data: { uid: user.uid, email: user.email! } };
 				} catch (error: any) {
 					return { error: error.message };

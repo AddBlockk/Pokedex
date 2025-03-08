@@ -10,7 +10,7 @@ import {
 import { ROUTES } from "./utils/constants";
 import { Layout } from "./components/Layout";
 import { useAuthState } from "./utils/firebase/hooks/index";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+
 
 export const AuthApp = () => (
 	<Routes>

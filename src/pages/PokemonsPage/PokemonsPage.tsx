@@ -19,6 +19,7 @@ export const PokemonsPage: React.FC = () => {
 
 	if (isLoading || !data) return <Spinner />;
 
+	// Собираем всех покемонов из загруженных страниц API
 	const pokemons = data.pages.reduce(
 		(pokemons: NamedAPIResource[], page: AxiosResponse<NamedAPIResourceList>) => {
 			return [...pokemons, ...page.data.results];
@@ -62,6 +63,7 @@ export const PokemonsPage: React.FC = () => {
 					onClose={() => setSelectedPokemonId(null)}
 				/>
 			</div>
+			{/* Контейнер подгрузки новых покемонов */}
 			<div ref={ref} className="h-10"></div>
 		</div>
 	);
