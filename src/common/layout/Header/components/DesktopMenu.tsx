@@ -66,11 +66,11 @@ export const DesktopMenu = () => {
 				<div className="flex items-center justify-center gap-4">
 					<ThemeButton />
 					{authState.data?.photoURL ? (
-						<Link to={ROUTES.PROFILE}>
+						<Link to={ROUTES.PROFILE} className="min-w-[48px]">
 							<img
 								src={authState.data?.photoURL}
 								alt="User Avatar"
-								className="h-12 rounded-lg object-cover"
+								className="flex h-[48px] items-center justify-center rounded-lg border bg-blue-500 text-white hover:bg-blue-400"
 							/>
 						</Link>
 					) : (

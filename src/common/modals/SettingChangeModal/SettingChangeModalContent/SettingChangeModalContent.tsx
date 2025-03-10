@@ -1,22 +1,21 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-
 import { Button, Input, Typography } from "../../../../common";
 import { citySchema, nameSchema } from "../../../../utils/constants/validation";
-import { useSelector } from "react-redux";
 import { useUpdateDocumentMutation } from "../../../../utils/firebase";
-import { RootState } from "app/store";
+import { useGetAuthStateQuery } from "../../../../entities/auth/api/authApi";
+
 export type SettingChangeModalContentType = {
 	type: keyof Pick<User, "city" | "displayName" | "phoneNumber">;
 	value: string;
 };
+
 interface SettingChangeModalContentProps extends Pick<ModalProps, "onClose"> {
 	setting: SettingChangeModalContentType;
 }
 
 const validateSchema = {
 	city: citySchema,
-
 	displayName: nameSchema,
 	phoneNumber: nameSchema,
 };
@@ -25,7 +24,7 @@ export const SettingChangeModalContent: React.FC<SettingChangeModalContentProps>
 	setting,
 	onClose,
 }) => {
-	const { user } = useSelector((state: RootState) => state.auth);
+	const { data: user } = useGetAuthStateQuery();
 	const updateDocumentMutation = useUpdateDocumentMutation({
 		options: {
 			onSuccess: () => {
@@ -40,18 +39,22 @@ export const SettingChangeModalContent: React.FC<SettingChangeModalContentProps>
 	});
 
 	const { isSubmitting, errors } = formState;
-	const loading = isSubmitting || updateDocumentMutation.isLoading;
+	const loading = isSubmitting || updateDocumentMutation.isPending;
 
 	return (
 		<form
 			className="mb-2 flex flex-col gap-4"
-			onSubmit={handleSubmit(async (values) =>
+			onSubmit={handleSubmit(async (values) => {
+				if (!user?.uid) {
+					console.error("User is not authorized");
+					return;
+				}
 				updateDocumentMutation.mutate({
 					collection: "users",
 					data: { [setting.type]: values[setting.type] },
 					id: user.uid,
-				}),
-			)}
+				});
+			})}
 		>
 			<Typography variant="sub-title">Change your data</Typography>
 			<Input
