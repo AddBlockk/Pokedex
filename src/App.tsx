@@ -1,16 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
-import {
-	PokemonsPage,
-	PokemonPage,
-	AuthPage,
-	ProfilePage,
-	// SettingsPage,
-	UsersPage,
-} from "./pages";
+import { PokemonsPage, PokemonPage, AuthPage, ProfilePage, SettingsPage, UsersPage } from "./pages";
 import { ROUTES } from "./utils/constants";
 import { Layout } from "./components/Layout";
 import { useAuthState } from "./utils/firebase/hooks/index";
-
 
 export const AuthApp = () => (
 	<Routes>
@@ -34,7 +26,7 @@ export const App: React.FC = () => {
 							<Route path={ROUTES.POKEMONS} element={<PokemonsPage />} />
 							<Route path={ROUTES.POKEMON} element={<PokemonPage />} />
 							<Route path={ROUTES.PROFILE} element={<ProfilePage />} />
-							{/* <Route path={ROUTES.SETTINGS} element={<SettingsPage />} /> */}
+							<Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
 							<Route path={ROUTES.USERS} element={<UsersPage />} />
 							<Route path="*" element={<Navigate to={ROUTES.POKEMONS} />} />
 						</Route>

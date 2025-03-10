@@ -20,7 +20,8 @@ export const Input: React.FC<InputProps> = React.forwardRef(
 				ref={inputRef}
 				{...props}
 			/>
-			{error && <span className="text-sm text-red-400">{error}</span>}
+			<span className="block min-h-[20px] text-sm text-red-400">{error}</span>{" "}
+			{/* Зарезервированное место */}
 		</label>
 	),
 );

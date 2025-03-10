@@ -37,27 +37,6 @@ export const PokemonPage: React.FC = () => {
 
 	const pokemon = requestPokemonByIdQuery.data.data;
 
-	// const evolutionChainData = requestPokemonSpeciesQuery.data?.data?.chain;
-	// console.log(evolutionChainData);
-
-	// if (!evolutionChainData) {
-	// 	return <Typography>No evolution data available</Typography>;
-	// }
-
-	// const evolutions = [];
-	// let currentEvolution = evolutionChainData;
-
-	// while (currentEvolution) {
-	// 	// Добавляем текущую эволюцию
-	// 	evolutions.push(currentEvolution.species.name);
-
-	// 	// Переходим к следующей эволюции, если она есть
-	// 	currentEvolution =
-	// 		currentEvolution.evolves_to.length > 0 ? currentEvolution.evolves_to[0] : null;
-	// }
-
-	// console.log("evolutions", evolutionChainData.evolves_to[0]);
-
 	return (
 		<div className="page text-gray-800 dark:text-slate-300">
 			<div

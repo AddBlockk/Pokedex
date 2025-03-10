@@ -19,7 +19,6 @@ export const DesktopMenu = () => {
 		await signOut(auth);
 		dispatch(authApi.util.resetApiState());
 		navigate(ROUTES.AUTH);
-		// window.location.reload(); // Принудительно обновляем состояние
 	};
 
 	// Автоматический редирект после выхода
@@ -68,15 +67,23 @@ export const DesktopMenu = () => {
 					<ThemeButton />
 					{authState.data?.photoURL ? (
 						<Link to={ROUTES.PROFILE}>
-							<img src={authState.data?.photoURL} alt="User Avatar" className="w-14 rounded-lg" />
+							<img
+								src={authState.data?.photoURL}
+								alt="User Avatar"
+								className="h-12 rounded-lg object-cover"
+							/>
 						</Link>
 					) : (
-						<Link
-							to={ROUTES.PROFILE}
-							className="flex h-[29px] w-14 items-center justify-center rounded-lg border bg-blue-500 text-white hover:bg-blue-400"
-						>
-							P
-						</Link>
+						<div>
+							<Link
+								to={ROUTES.PROFILE}
+								className="flex h-12 w-12 items-center justify-center rounded-lg border bg-blue-500 text-white hover:bg-blue-400"
+							>
+								<div className="text-lg font-semibold">
+									{authState.data?.displayName?.charAt(0).toUpperCase()}
+								</div>
+							</Link>
+						</div>
 					)}
 					{authState.data?.uid ? (
 						<Button onClick={handleLogout}>LOGOUT</Button>

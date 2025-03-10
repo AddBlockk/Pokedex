@@ -12,13 +12,10 @@ export const useAuthState = () => {
 	React.useEffect(() => {
 		const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
 			if (!user) {
-				console.log("User logged out");
 				setData(null); // Явно сбрасываем состояние
 				setIsLoading(false);
 				return;
 			}
-
-			console.log("User logged in:", user.uid);
 
 			const q = query(collection(database, "users"), where("uid", "==", user.uid));
 
@@ -29,7 +26,6 @@ export const useAuthState = () => {
 					querySnapshot.forEach((doc) => userData.push(doc.data() as User));
 
 					if (userData.length > 0) {
-						console.log("User data updated:", userData[0]);
 						setData(userData[0]);
 					} else {
 						console.warn("User data not found in Firestore!");

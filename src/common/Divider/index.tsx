@@ -1,7 +1,5 @@
 import React from "react";
 
-import styles from "./Divider.module.css";
-
 interface DividerProps {
 	title: string;
 }

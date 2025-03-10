@@ -14,18 +14,17 @@ export const Modal: React.FC<ModalProps> = ({ children, isShowing, onClose }) =>
 		)}
 		<div
 			className={classnames(
-				"fixed right-0 left-0 z-[1050] m-auto w-[99%] overflow-hidden overflow-y-auto rounded-t-2xl bg-white px-5 py-6 outline-none",
+				"fixed top-1/2 right-0 left-0 z-[1050] m-auto flex w-[99%] flex-col gap-[10px] overflow-hidden rounded-t-2xl bg-white outline-none",
 				"md:w-96 md:rounded-2xl md:px-9",
 				"dark:bg-slate-700",
-				{ "bottom-[0]": isShowing },
-				{ "md:bottom-1/2": isShowing },
+				"-translate-y-1/2 transform",
 			)}
 			aria-modal
 			aria-hidden
 			tabIndex={-1}
 			role="dialog"
 		>
-			{isShowing && children}
+			<div className="flex flex-col gap-[10px]">{isShowing && children}</div>
 		</div>
 	</div>
 );

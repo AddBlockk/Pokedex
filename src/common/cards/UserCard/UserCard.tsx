@@ -11,13 +11,19 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
 	return (
 		<div className="mb-[20px] flex flex-col gap-5 rounded-lg bg-white p-5 shadow-lg dark:bg-slate-500">
 			<div className="flex gap-5">
-				{user.photoURL ? (
-					<img src={user.photoURL} alt="User Avatar" className="h-20 w-20 rounded-lg" />
-				) : (
-					<div className="flex h-20 w-20 items-center justify-center rounded-lg border bg-blue-500 text-[30px] font-semibold text-white hover:bg-blue-400">
-						P
-					</div>
-				)}
+				<div className="cursor-pointer">
+					{user.photoURL ? (
+						<img
+							src={user.photoURL}
+							alt="User Avatar"
+							className="h-20 w-20 rounded-lg object-cover"
+						/>
+					) : (
+						<div className="flex h-20 w-20 items-center justify-center rounded-lg border bg-blue-500 text-[30px] font-semibold text-white hover:bg-blue-400">
+							{user.displayName?.charAt(0).toUpperCase()}{" "}
+						</div>
+					)}
+				</div>
 
 				<div className="inline-flex max-w-full flex-col">
 					<div className="inline-flex overflow-hidden text-2xl font-light text-ellipsis whitespace-nowrap">

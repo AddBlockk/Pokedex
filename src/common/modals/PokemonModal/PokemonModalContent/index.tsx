@@ -42,10 +42,14 @@ export const PokemonModalContent: React.FC<PokemonModalContentProps> = ({ pokemo
 	const user = authState.data;
 
 	return (
-		<div className="mb-2 flex flex-col gap-4">
+		<div className="mb-2 flex flex-col gap-4 px-5 py-6">
 			<Typography variant="title">{pokemon.name}</Typography>
 			<div className="flex justify-center">
-				<img className="w-2/3" src={pokemon.sprites.front_default ?? ""} alt="" />
+				<img
+					className="h-64 w-64 object-contain"
+					src={pokemon.sprites.front_default ?? ""}
+					alt={pokemon.name}
+				/>
 			</div>
 
 			<PokemonTypes types={pokemon.types} />

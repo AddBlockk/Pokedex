@@ -1,76 +1,91 @@
-// import React from "react";
-// import { Button } from "../../../common";
-// import { Modal } from "../Modal";
-// import { uploadPhoto } from "../../../utils/supabase/uploadPhoto"; // Подключаем нашу функцию загрузки
-// import { uploadUserPhoto } from "../../../features/photo/photoSlice"; // Импортируем экшен
-// import { useUpdateDocumentMutation } from "../../../utils/firebase/hooks/index";
-// import { useDispatch } from "react-redux";
+import React from "react";
+import { Button } from "../../../common";
+import { Modal } from "../Modal";
+import { uploadPhoto } from "./uploadPhoto"; // Используем Firebase для загрузки фото
+import { useUpdateDocumentMutation } from "../../../utils/firebase/hooks/index"; // Хук для обновления данных
 
-// interface UploadPhotoModalProps extends Omit<ModalProps, "children" | "loading"> {
-//     uid: User["uid"];
-// }
+interface UploadPhotoModalProps extends Omit<ModalProps, "children" | "loading"> {
+	uid: string; // Идентификатор пользователя
+	onPhotoUploaded: (photoURL: string) => void; // Коллбек для обновления фотографии в родительском компоненте
+}
 
-// export const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({ onClose, uid, ...props }) => {
-//     const dispatch = useDispatch();
-//     const [loading, setLoading] = React.useState(false);
-//     const fileInputRef = React.useRef<HTMLInputElement>(null);
-//     const updateDocumentMutation = useUpdateDocumentMutation();
+export const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
+	onClose,
+	uid,
+	onPhotoUploaded,
+	...props
+}) => {
+	const [loading, setLoading] = React.useState(false);
+	const [error, setError] = React.useState<string | null>(null);
+	const fileInputRef = React.useRef<HTMLInputElement>(null);
+	const updateDocumentMutation = useUpdateDocumentMutation();
 
-//     const handleUpload = async (file: File) => {
-//         setLoading(true);
-//         try {
-//             // Загружаем фото через Redux
-//             const photoURL = await dispatch(uploadUserPhoto({ file, userId: uid })).unwrap();
+	const handleUpload = async (file: File) => {
+		setLoading(true);
+		setError(null); // Сброс ошибки перед новой загрузкой
+		try {
+			// Загружаем фото в Firebase Storage
+			const photoURL = await uploadPhoto(file, uid);
 
-//             // Обновляем URL фото в Firebase
-//             await updateDocumentMutation.mutateAsync({
-//                 collection: "users",
-//                 data: { photoURL },
-//                 id: uid,
-//             });
+			// Обновляем URL фото в Firebase Firestore
+			await updateDocumentMutation.mutateAsync({
+				collection: "users",
+				data: { photoURL },
+				id: uid,
+			});
 
-//             console.log("Фото успешно загружено и обновлено в Firebase");
-//         } catch (error) {
-//             console.error("Ошибка при загрузке фото:", error);
-//         } finally {
-//             setLoading(false);
-//             onClose();
-//         }
-//     };
+			// Передаем новый URL в родительский компонент
+			onPhotoUploaded(photoURL);
+		} catch (err) {
+			setError("Ошибка при загрузке фото. Попробуйте снова.");
+			console.error("Ошибка при загрузке фото:", err);
+		} finally {
+			setLoading(false);
+			onClose();
+		}
+	};
 
-//     const onFileInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-//         if (!event.target.files || event.target.files.length === 0) {
-//             console.error("Файл не выбран");
-//             return;
-//         }
+	const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0];
+		if (!file) {
+			setError("Файл не выбран");
+			return;
+		}
 
-//         const file = event.target.files[0];
-//         if (!file.type.startsWith("image/")) {
-//             console.error("Выбранный файл не является изображением");
-//             return;
-//         }
+		// Проверяем, что это изображение
+		if (!file.type.startsWith("image/")) {
+			setError("Выбранный файл не является изображением");
+			return;
+		}
 
-//         await handleUpload(file);
-//     };
+		// Загружаем фото
+		handleUpload(file);
+	};
 
-//     return (
-//         <Modal {...props} onClose={onClose}>
-//             <label htmlFor="upload-button">
-//                 <input
-//                     type="file"
-//                     id="upload-button"
-//                     style={{ display: "none" }}
-//                     ref={fileInputRef}
-//                     onChange={onFileInputChange}
-//                     accept="image/*"
-//                 />
-//                 <Button variant="text" onClick={() => !loading && fileInputRef.current?.click()}>
-//                     {!loading ? "Upload your photo" : "Uploading..."}
-//                 </Button>
-//             </label>
-//             <Button onClick={onClose} loading={loading}>
-//                 CANCEL
-//             </Button>
-//         </Modal>
-//     );
-// };
+	return (
+		<Modal {...props} onClose={onClose}>
+			<div className="my-[10px] flex flex-col gap-[10px]">
+				<label htmlFor="upload-button">
+					<input
+						type="file"
+						id="upload-button"
+						style={{ display: "none" }}
+						ref={fileInputRef}
+						onChange={onFileInputChange}
+						accept="image/*"
+					/>
+					<Button variant="text" onClick={() => !loading && fileInputRef.current?.click()}>
+						{!loading ? "Upload your photo" : "Uploading..."}
+					</Button>
+				</label>
+
+				{/* Ошибка загрузки */}
+				{error && <div className="mt-2 text-red-500">{error}</div>}
+
+				<Button onClick={onClose} loading={loading}>
+					CANCEL
+				</Button>
+			</div>
+		</Modal>
+	);
+};

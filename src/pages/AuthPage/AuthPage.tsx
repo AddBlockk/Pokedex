@@ -32,7 +32,7 @@ export const AuthPage = () => {
 				</div>
 
 				<div className="flex w-full flex-col items-center justify-center rounded-2xl p-6 md:w-1/2 md:rounded-l-md md:rounded-r-2xl dark:border-[1px] dark:text-white">
-					<div className="flex w-full flex-col items-center justify-center">
+					<div className="flex h-[600px] w-full flex-col items-center justify-center">
 						{!isSignUp && <SignInForm />}
 						{isSignUp && <SignUpForm />}
 						<div className="mt-[10px] w-full">
